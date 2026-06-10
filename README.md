@@ -24,7 +24,7 @@ The repository contains three CSV files representing different aspects of the bu
 | File | Description | Key Columns | Row Count |
 |------|-------------|-------------|------------|
 | `tbl_product.csv` | Product master data | product_id, product_name, product_category, product_cost, product_price | 35 products (duplicates exist) |
-| `tbl_funnel.csv` | Daily marketing funnel metrics | date, product_id, view, click, add_to_cart, purchase | ~1,800+ rows (Jan 2024 – Sep 2025) |
+| `tbl_funnels.csv` | Daily marketing funnel metrics | date, product_id, view, click, add_to_cart, purchase | ~1,800+ rows (Jan 2024 – Sep 2025) |
 | `tbl_transaction.csv` | Individual sales transactions | trx_id, product_id, trx_date, units | ~17,000+ transactions |
 
 ### Data Quality Issues Addressed
