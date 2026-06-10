@@ -25,7 +25,7 @@ The repository contains three CSV files representing different aspects of the bu
 |------|-------------|-------------|------------|
 | `tbl_product.csv` | Product master data | product_id, product_name, product_category, product_cost, product_price | 35 products (duplicates exist) |
 | `tbl_funnels.csv` | Daily marketing funnel metrics | date, product_id, view, click, add_to_cart, purchase | ~1,800+ rows (Jan 2024 – Sep 2025) |
-| `tbl_transaction.csv` | Individual sales transactions | trx_id, product_id, trx_date, units | ~17,000+ transactions |
+| `tbl_transaction.csv` | Individual sales transactions | trx_id, product_id, trx_date, units | ~170,000+ transactions |
 
 ### Data Quality Issues Addressed
 - **Product table**: `product_cost` and `product_price` contained `'IDR '` prefix → removed and cast to numeric. Duplicate rows (`DQProduk-015`, `DQProduk-035`) were deduplicated.
