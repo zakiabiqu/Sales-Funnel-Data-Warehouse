@@ -15,6 +15,15 @@ AND STR_TO_DATE(LPAD(trx_date, 8, '0'), '%d%m%Y') = (
 
 
 -- Create tbl_dwh_transaction Table
+CREATE TABLE tbl_dwh_transaction (
+    trx_id VARCHAR(50),                  
+    product_id VARCHAR(50),              
+    trx_date DATE,
+    units INT,
+    insert_by VARCHAR(50),
+    insert_date DATETIME
+);
+
 INSERT INTO tbl_dwh_transaction(trx_id, product_id, trx_date, units, insert_by, insert_date)
 SELECT
     trx_id,
@@ -46,6 +55,16 @@ WHERE product_id IS NOT NULL;
 
 
 -- Create tbl_dwh_product Table
+CREATE TABLE tbl_dwh_product (
+    product_id VARCHAR(255),        
+    product_name VARCHAR(255),
+    product_category VARCHAR(100),
+    product_cost DECIMAL(15, 0),    
+    product_price DECIMAL(15, 0),   
+    insert_by VARCHAR(50),
+    insert_date DATETIME
+);
+
 INSERT INTO tbl_dwh_product (product_id, product_name, product_category, product_cost, product_price, insert_by, insert_date)
 SELECT DISTINCT
     product_id,
@@ -78,6 +97,17 @@ WHERE STR_TO_DATE(LPAD(date, 8, '0'), '%d%m%Y') = (
 
 
 -- Create tbl_dwh_funnels Table
+CREATE TABLE tbl_dwh_funnels (
+    `date` DATE,
+    product_id VARCHAR(50),  
+    purchase INT,
+    add_to_cart INT,
+    click INT,
+    view INT,
+    insert_by VARCHAR(50),
+    insert_date DATETIME
+);
+
 INSERT INTO tbl_dwh_funnels (`date`, product_id, purchase, add_to_cart, click, view, insert_by, insert_date)
 SELECT
     STR_TO_DATE(LPAD(`date`, 8, '0'), '%d%m%Y') AS `date`,
@@ -88,25 +118,29 @@ SELECT
     view,
     'SYSTEM' AS insert_by,
     NOW() AS insert_date
-FROM tbl_funnel
+FROM tbl_funnels
 WHERE STR_TO_DATE(LPAD(`date`, 8, '0'), '%d%m%Y') =
-(SELECT MAX(STR_TO_DATE(LPAD(`date`, 8, '0'), '%d%m%Y')) FROM tbl_funnel);
+(SELECT MAX(STR_TO_DATE(LPAD(`date`, 8, '0'), '%d%m%Y')) FROM tbl_funnels);
 
-SELECT * FROM tbl_dwh_funnels;
-
-
--- Convert Date into Additional Date Attributes
-SELECT
-    '2025-08-17' - INTERVAL 1 DAY AS `date`,
-    DAYNAME('2025-08-17' - INTERVAL 1 DAY) AS day_name,
-    MONTHNAME('2025-08-17' - INTERVAL 1 DAY) AS month_name,
-    YEAR('2025-08-17' - INTERVAL 1 DAY) AS year,
-    'SYSTEM' AS insert_by,
-    '2025-08-17 10:00:00' AS insert_date
-
+-- Create Summary Table
+CREATE TABLE f_summary_transaction (
+    product_id VARCHAR(15),
+    trx_date DATE,
+    total_units INT,
+    cost_each FLOAT,
+    price_each FLOAT,
+    total_price FLOAT,
+    total_profit FLOAT,
+    total_purchase INT,
+    total_click INT,
+    total_view INT,
+    insert_by VARCHAR(50),
+    insert_date DATETIME
+);
 
 
 -- Data Integration (JOIN DATA)
+INSERT INTO f_summary_transaction (product_id, trx_date, total_units, cost_each, price_each, total_price, total_profit, total_purchase, total_click, total_view, insert_by, insert_date)
 WITH transaction AS (
    SELECT
       product_id,
@@ -138,7 +172,7 @@ funnels AS (
 SELECT 
       f.product_id,
       f.`date` AS trx_date,
-      COALESCE(t.total_unit, 0) AS total_unit,
+      COALESCE(t.total_unit, 0) AS total_units,
       p.product_cost AS cost_each,
       p.product_price AS price_each,
       COALESCE(t.total_unit, 0) * p.product_price AS total_price,
@@ -155,18 +189,4 @@ INNER JOIN product AS p ON f.product_id = p.product_id;
 
 
 
--- Create Summary Table
-CREATE TABLE f_summary_transaction (
-    product_id VARCHAR(15),
-    trx_date DATE,
-    total_units INT,
-    cost_each FLOAT,
-    price_each FLOAT,
-    total_price FLOAT,
-    total_profit FLOAT,
-    total_purchase INT,
-    total_click INT,
-    total_view INT,
-    insert_by VARCHAR(50),
-    insert_date DATETIME
-);
+
