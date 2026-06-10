@@ -88,7 +88,7 @@ STR_TO_DATE(LPAD(`date`, 8, '0'), '%d%m%Y') AS trx_date
 
 ### 4. Create DWH Tables 
 
-Store cleaned data into tbl_dwh_product, tbl_dwh_funnel, tbl_dwh_transaction.
+Store cleaned data into `tbl_dwh_product`, `tbl_dwh_funnel`, `tbl_dwh_transaction`.
 
 ### 5. Integrate Data 
 
@@ -98,8 +98,8 @@ Use CTEs to aggregate transactions and funnel metrics, then `LEFT JOIN` and `INN
 WITH transaction_agg AS (...),
      funnel_agg AS (...)
 SELECT ...
-FROM funnel_agg f
-LEFT JOIN transaction_agg t ON ...
+FROM tbl_dwh_funnel f
+LEFT JOIN tbl_dwh_transaction t ON ...
 INNER JOIN tbl_dwh_product p ON ...
 ```
 
